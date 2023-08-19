@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background-color: #1f1f1f;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+            width: 300px;
+        }
+
+        .input-section {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .result-section {
+            display: none;
+            background-color: #292929;
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        #resultText {
+            margin: 0;
+        }
+
+        #ipValue {
+            font-weight: bold;
+        }
+    </style>
+    </style>
+    <title>UI for getting Servers behind DNS</title>
+</head>
+<body>
+    <div class="container">
+        <div class="input-section">
+            <label for="dnsInput">DNS Adı:</label>
+            <input type="text" id="dnsInput" placeholder="DNS">
+            <button id="sendButton">Gönder</button>
+        </div>
+        <div class="result-section">
+            <p id="resultText">Sonuç: <span id="ipValue">IP Adresi</span></p>
+        </div>
+    </div>
+    <script>
+        const sendButton = document.getElementById('sendButton');
+        const dnsInput = document.getElementById('dnsInput');
+        const resultSection = document.querySelector('.result-section');
+        const ipValue = document.getElementById('ipValue');
+
+        async function fetchIPAndDisplay(dnsName) {
+            const response = await fetch(`http://localhost:4540/hidden_ip?dns_name=${dnsName}`);
+            const data = await response.text();
+            ipValue.textContent = data;
+            resultSection.style.display = 'block';
+        }
+
+        sendButton.addEventListener('click', async () => {
+            const dnsName = dnsInput.value;
+            if (!dnsName) {
+                alert('DNS Adını Girin');
+                return;
+            }
+
+            await fetchIPAndDisplay(dnsName);
+            pollForData(dnsName); // Start polling for data
+        });
+
+        async function pollForData(dnsName) {
+            while (true) {
+                const response = await fetch(`http://localhost:4540/hidden_ip?dns_name=${dnsName}`);
+                const data = await response.text();
+                if (data) {
+                    ipValue.textContent = data;
+                    resultSection.style.display = 'block';
+                    break;
+                }
+                await new Promise(resolve => setTimeout(resolve, 5000)); // Wait for 5 seconds
+            }
+        }
+    </script>
+</body>
+</html>
