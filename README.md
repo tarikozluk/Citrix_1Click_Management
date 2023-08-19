@@ -21,5 +21,5 @@ Citrix 1Click Management is a powerful tool designed for Load Balancer and Syste
 2. Create .env File
 3. Type the inputs to get from .env file (HOST, PORT, CITRIX informations...)
 4. Be Sure LB server extensions are correct
-![image](https://github.com/tarikozluk/Citrix_1Click_Management/assets/47662299/43b05ebd-908b-409b-9f75-a38888cd6847)
-Image is just a sample. Type your own apps and get the servers or containers behind the High Available structure
+
+2. Type your own apps and get the servers or containers behind the High Available structure
